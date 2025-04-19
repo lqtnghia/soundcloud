@@ -17,11 +17,15 @@
     "@emotion/styled": "11.11.0",
     "@mui/icons-material": "5.14.7",
     "@mui/material": "5.14.7",
+    "@types/react-slick": "^0.23.13",
     "next": "^14.2.15",
     "nextjs-mui-ts-template-by-lqtnghia": "file:",
     "punycode": "^2.3.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-h5-audio-player": "^3.10.0-rc.1",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
     "@types/node": "20.5.9",
