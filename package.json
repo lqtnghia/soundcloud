@@ -21,11 +21,13 @@
     "next": "^14.2.15",
     "nextjs-mui-ts-template-by-lqtnghia": "file:",
     "punycode": "^2.3.1",
+    "query-string": "^9.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-h5-audio-player": "^3.10.0-rc.1",
     "react-slick": "^0.30.3",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "wavesurfer.js": "^7.9.4"
   },
   "devDependencies": {
     "@types/node": "20.5.9",
