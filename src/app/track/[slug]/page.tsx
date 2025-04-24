@@ -1,5 +1,7 @@
 "use client";
 
+import WaveTrack from "@/components/track/wave.track";
+import { Container } from "@mui/material";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 
@@ -10,7 +12,11 @@ const DetailTrackPage = (props: any) => {
 
   const search = searchParams.get("audio");
   console.log(">>> check audio: ", search);
-  return <div>DetailTrackPage</div>;
+  return (
+    <Container>
+      <WaveTrack />
+    </Container>
+  );
 };
 
 export default DetailTrackPage;

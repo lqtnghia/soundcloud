@@ -11,7 +11,7 @@ export default function AppFooter() {
   const hasMounted = useHasMounted();
   if (!hasMounted) return <></>; //fragment
 
-  console.log(">>> check backend url: ", process.env.NEXT_PUBLIC_BACKEND_URL);
+  // console.log(">>> check backend url: ", process.env.NEXT_PUBLIC_BACKEND_URL);
 
   return (
     <React.Fragment>
