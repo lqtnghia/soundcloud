@@ -15,7 +15,7 @@ interface IProps {
 
 const MainSlider = (props: IProps) => {
   const { data } = props;
-  console.log(">>  check data: ", props.data);
+  // console.log(">>  check data: ", props.data);
   const NextArrow = (props: any) => {
     return (
       <Button

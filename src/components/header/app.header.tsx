@@ -10,7 +10,6 @@ import InputBase from "@mui/material/InputBase";
 import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
@@ -18,6 +17,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Avatar, Container, Link } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -61,6 +61,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function AppHeader() {
+  const { data: session } = useSession();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -205,10 +206,18 @@ export default function AppHeader() {
                 "> a": { color: "unset", textDecoration: "unset" }
               }}
             >
-              <Link href={"/playlist"}>Playlist</Link>
-              <Link href={"/like"}>Likes</Link>
-              <Link href={"/upload"}>Upload</Link>
-              <Avatar onClick={handleProfileMenuOpen}>NG</Avatar>
+              {session ? (
+                <>
+                  <Link href={"/playlist"}>Playlist</Link>
+                  <Link href={"/like"}>Likes</Link>
+                  <Link href={"/upload"}>Upload</Link>
+                  <Avatar onClick={handleProfileMenuOpen}>NG</Avatar>
+                </>
+              ) : (
+                <>
+                  <Link href={"/api/auth/signin"}>Login</Link>
+                </>
+              )}
             </Box>
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
               <IconButton

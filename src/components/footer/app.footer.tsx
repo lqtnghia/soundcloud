@@ -1,8 +1,8 @@
+"use client";
 import * as React from "react";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import { Container } from "@mui/material";
 import { useHasMounted } from "@/utils/customHook";
