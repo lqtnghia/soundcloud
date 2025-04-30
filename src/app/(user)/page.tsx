@@ -26,7 +26,6 @@ export default async function HomePage() {
     <div>
       <Container>
         <MainSlider data={chills?.data ? chills.data : []} />
-        {/* <MainSlider data={chills?.data ??[]} /> */}
         <MainSlider data={workouts?.data ? workouts.data : []} />
         <MainSlider data={party?.data ? party.data : []} />
       </Container>

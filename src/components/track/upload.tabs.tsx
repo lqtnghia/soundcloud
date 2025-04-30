@@ -5,7 +5,6 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Step1 from "@/components/track/steps/step1";
 import Step2 from "@/components/track/steps/step2";
-import { Percent } from "@mui/icons-material";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -55,8 +54,8 @@ const UploadTabs = () => {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Tracks" />
-          <Tab label="Basic Information" />
+          <Tab label="Tracks" disabled={value !== 0} />
+          <Tab label="Basic Information" disabled={value !== 1} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -67,7 +66,7 @@ const UploadTabs = () => {
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <Step2 trackUpload={trackUpload} />
+        <Step2 trackUpload={trackUpload} setValue={setValue} />
       </CustomTabPanel>
     </Box>
   );

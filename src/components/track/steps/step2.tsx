@@ -10,6 +10,7 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { sendRequest } from "@/utils/api";
+import { useToast } from "@/utils/toast";
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number }
@@ -48,6 +49,8 @@ interface IInfo {
 function InputFileUpload(props: IInfo) {
   const { setInfo, info } = props;
   const { data: session } = useSession();
+  const toast = useToast();
+
   const handleUpload = async (image: any) => {
     const formData = new FormData();
     formData.append("fileUpload", image);
@@ -66,7 +69,7 @@ function InputFileUpload(props: IInfo) {
       console.log(">>> check audio: ", res.data.data.fileName);
     } catch (error) {
       //@ts-ignore
-      console.log(">>> check error: ", error?.response?.data);
+      toast.errorerror?.response?.data();
     }
   };
 
@@ -99,6 +102,7 @@ interface Iprops {
     percent: number;
     uploadTrackName: string;
   };
+  setValue: (value: number) => void;
 }
 
 interface INewTrack {
@@ -109,8 +113,9 @@ interface INewTrack {
   category: string;
 }
 const Step2 = (props: Iprops) => {
-  const { trackUpload } = props;
+  const { trackUpload, setValue } = props;
   const { data: session } = useSession();
+  const toast = useToast();
   const [info, setInfo] = useState<INewTrack>({
     title: "",
     description: "",
@@ -149,9 +154,11 @@ const Step2 = (props: Iprops) => {
       }
     });
     if (res.data) {
-      alert("Create Success");
+      setValue(0);
+      toast.success("Create Success");
+      // alert("Create Success");
     } else {
-      alert(res.message);
+      toast.error(res.message);
     }
     // console.log(">>> check info: ", info);
   };

@@ -1,6 +1,6 @@
 "use client";
 import { useWavesurfer } from "@/utils/customHook";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, {
   useCallback,
   useEffect,
@@ -12,14 +12,27 @@ import { WaveSurferOptions } from "wavesurfer.js";
 import "./wave.scss";
 import { PauseCircle, PlayCircle } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import { fetchDefaultImages, sendRequest } from "@/utils/api";
+import { useTrackContext } from "@/lib/tracks.wrapper";
+import CommentTrack from "@/components/track/comment.track";
+import LikeTrack from "@/components/track/like.track";
 
-const WaveTrack = () => {
+interface IProps {
+  track: ITrackTop | null;
+  comments: ITrackComment[];
+}
+
+const WaveTrack = (props: IProps) => {
+  const { track, comments } = props;
   const searchParams = useSearchParams();
   const fileName = searchParams.get("audio");
+  const { currentTrack, setCurrentTrack } = useTrackContext() as ITrackContext;
   const containerRef = useRef<HTMLDivElement>(null);
   const hoverRef = useRef<HTMLDivElement>(null);
   const [time, setTime] = useState<string>("0:00");
   const [duration, setDuration] = useState<string>("0:00");
+  const router = useRouter();
+  const firstViewRef = useRef(true);
 
   const optionsMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
     const canvas = document.createElement("canvas");
@@ -115,34 +128,36 @@ const WaveTrack = () => {
     return `${minutes}:${paddedSeconds}`;
   };
 
-  const arrComments = [
-    {
-      id: 1,
-      avatar: "http://localhost:8000/images/chill1.png",
-      moment: 10,
-      user: "username 1",
-      content: "just a comment1"
-    },
-    {
-      id: 2,
-      avatar: "http://localhost:8000/images/chill1.png",
-      moment: 30,
-      user: "username 2",
-      content: "just a comment3"
-    },
-    {
-      id: 3,
-      avatar: "http://localhost:8000/images/chill1.png",
-      moment: 50,
-      user: "username 3",
-      content: "just a comment3"
-    }
-  ];
-
   const calLeft = (moment: number) => {
     const hardCoreDuration = 199;
     const percent = (moment / hardCoreDuration) * 100;
     return `${percent}%`;
+  };
+
+  useEffect(() => {
+    if (wavesurfer && currentTrack.isPlaying) {
+      wavesurfer.pause();
+    }
+  }, [currentTrack]);
+
+  useEffect(() => {
+    if (track?._id && !currentTrack?._id) {
+      setCurrentTrack({ ...track, isPlaying: false });
+    }
+  }, [track]);
+
+  const handleIncreaseView = async () => {
+    if (firstViewRef.current) {
+      const res = await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
+        url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/increase-view`,
+        method: "POST",
+        body: {
+          trackId: track?._id
+        }
+      });
+      router.refresh();
+      firstViewRef.current = false;
+    }
   };
 
   return (
@@ -172,6 +187,13 @@ const WaveTrack = () => {
               <div
                 onClick={() => {
                   onPlayClick();
+                  handleIncreaseView();
+                  if (track && wavesurfer) {
+                    setCurrentTrack({
+                      ...track,
+                      isPlaying: false
+                    });
+                  }
                 }}
                 style={{
                   borderRadius: "50%",
@@ -201,7 +223,7 @@ const WaveTrack = () => {
                   color: "white"
                 }}
               >
-                title
+                {track?.title}
               </div>
               <div
                 style={{
@@ -213,7 +235,7 @@ const WaveTrack = () => {
                   color: "white"
                 }}
               >
-                alo
+                {track?.description}
               </div>
             </div>
           </div>
@@ -232,10 +254,13 @@ const WaveTrack = () => {
                 backdropFilter: "brightness(0.5)"
               }}
             ></div>
-            <div className="comments" style={{ position: "relative" }}>
-              {arrComments.map((item) => {
+            <div
+              className="comments"
+              style={{ position: "relative", background: "red" }}
+            >
+              {comments?.map((item) => {
                 return (
-                  <Tooltip title={item.content} arrow key={item.id}>
+                  <Tooltip title={item.content} arrow key={item._id}>
                     <img
                       onPointerMove={(e) => {
                         const hover = hoverRef.current!;
@@ -249,7 +274,7 @@ const WaveTrack = () => {
                         zIndex: 20,
                         left: calLeft(item.moment)
                       }}
-                      src={`http://localhost:8000/images/chill1.png`}
+                      src={fetchDefaultImages(item.user.type)}
                     />
                   </Tooltip>
                 );
@@ -266,8 +291,8 @@ const WaveTrack = () => {
             alignItems: "center"
           }}
         >
-          {/* {track?.imgUrl ? (
-            <Image
+          {track?.imgUrl ? (
+            <img
               src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`}
               width={250}
               height={250}
@@ -281,7 +306,7 @@ const WaveTrack = () => {
                 height: 250
               }}
             ></div>
-          )} */}
+          )}
           <div
             style={{
               background: "#ccc",
@@ -291,7 +316,7 @@ const WaveTrack = () => {
           ></div>
         </div>
       </div>
-      {/* <div>
+      <div>
         <LikeTrack track={track} />
       </div>
       <div>
@@ -300,7 +325,7 @@ const WaveTrack = () => {
           track={track}
           wavesurfer={wavesurfer}
         />
-      </div> */}
+      </div>
     </div>
   );
 };

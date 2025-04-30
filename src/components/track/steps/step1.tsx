@@ -5,7 +5,6 @@ import "./theme.css";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { sendRequestFile } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 
@@ -65,8 +64,7 @@ const Step1 = (props: IProp) => {
             {
               headers: {
                 Authorization: `Bearer ${session?.access_token}`,
-                target_type: "tracks",
-                delay: 5000
+                target_type: "tracks"
               },
               onUploadProgress: (progressEvent) => {
                 let percentCompleted = Math.floor(
