@@ -16,6 +16,7 @@ import { fetchDefaultImages, sendRequest } from "@/utils/api";
 import { useTrackContext } from "@/lib/tracks.wrapper";
 import CommentTrack from "@/components/track/comment.track";
 import LikeTrack from "@/components/track/like.track";
+import Image from "next/image";
 
 interface IProps {
   track: ITrackTop | null;
@@ -155,6 +156,14 @@ const WaveTrack = (props: IProps) => {
           trackId: track?._id
         }
       });
+      await sendRequest<IBackendRes<any>>({
+        url: `/api/revalidate`,
+        method: "POST",
+        queryParams: {
+          tag: "track-by-id",
+          secret: "justArandomString"
+        }
+      });
       router.refresh();
       firstViewRef.current = false;
     }
@@ -261,20 +270,21 @@ const WaveTrack = (props: IProps) => {
               {comments?.map((item) => {
                 return (
                   <Tooltip title={item.content} arrow key={item._id}>
-                    <img
+                    <Image
                       onPointerMove={(e) => {
                         const hover = hoverRef.current!;
                         hover.style.width = calLeft(item.moment + 3);
                       }}
+                      width={20}
+                      height={20}
                       style={{
-                        width: 20,
-                        height: 20,
                         position: "absolute",
                         top: 71,
                         zIndex: 20,
                         left: calLeft(item.moment)
                       }}
                       src={fetchDefaultImages(item.user.type)}
+                      alt="user comment"
                     />
                   </Tooltip>
                 );
@@ -292,7 +302,7 @@ const WaveTrack = (props: IProps) => {
           }}
         >
           {track?.imgUrl ? (
-            <img
+            <Image
               src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track?.imgUrl}`}
               width={250}
               height={250}

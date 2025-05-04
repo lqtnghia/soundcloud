@@ -39,7 +39,7 @@ const LikeTrack = (props: IProps) => {
 
   const handleLikeTrack = async () => {
     await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
-      url: `http://localhost:8000/api/v1/likes`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/likes`,
       method: "POST",
       body: {
         track: track?._id,
@@ -51,6 +51,14 @@ const LikeTrack = (props: IProps) => {
     });
 
     fetchData();
+    await sendRequest<IBackendRes<any>>({
+      url: `/api/revalidate`,
+      method: "POST",
+      queryParams: {
+        tag: "track-by-id",
+        secret: "justArandomString"
+      }
+    });
     Router.refresh();
   };
 
